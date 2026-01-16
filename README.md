@@ -1,4 +1,4 @@
-# Classiq Home Exercise — Desktop (Docker Compose) Solution v2
+# API for executing Quantum Circuits - Classiq home exercise
 
 This solution implements the required API for **asynchronous quantum circuit execution** with a strong focus on:
 - **Task integrity** (no task loss, crash-safe)
@@ -40,11 +40,11 @@ Output:
 - Pending (including processing):
 `{ "status": "pending", "message": "Task is still in progress." }`
 - Not found:
-HTTP 404 with detail `"Task not found."`
+`{ "status": "error", "message": "Task not found." }`
 
 ## Worker concurrency
 Worker uses `ProcessPoolExecutor(max_workers=<cpu_cores>)`.
-CPU cores are detected in a container-aware way (cpuset/quota → fallback to `os.cpu_count()`).
+CPU cores are detected in a container-aware way (cpuset/quota; fallback to `os.cpu_count()`).
 
 ## Task integrity mechanics
 
@@ -80,4 +80,14 @@ Swagger UI:
 Start the stack, then run:
 ```bash
 pytest -q
+```
+
+Integration tests (require running services). Set `INTEGRATION=1` to enable them:
+```bash
+INTEGRATION=1 pytest tests/test_integration.py -q
+```
+
+Optional: override API URL (default http://localhost:8000):
+```bash
+API_BASE_URL=http://localhost:8000 INTEGRATION=1 pytest tests/test_integration.py -q
 ```
